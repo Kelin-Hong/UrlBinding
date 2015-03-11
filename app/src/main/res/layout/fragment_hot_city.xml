@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://robobinding.org/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        bind:text="${stid}"
+        bind:visibility="{visibility}" />
+    <Button
+        android:id="@+id/change_list"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="changeFooterVisibility"
+        bind:onClick="changeFooterVisibility" />
+
+    <uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout
+        android:id="@+id/ptr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ListView
+            android:id="@+id/grid_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="4"
+            bind:itemLayout="@layout/string_item_layout1"
+            bind:onItemClick="onItemClick"
+            bind:source="{data_homepage}" />
+    </uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout>
+
+</LinearLayout>

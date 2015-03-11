@@ -1,0 +1,11 @@
+<resources>
+    <declare-styleable name="NetImageView">
+        <attr name="url" format="string|reference" />
+        <attr name="default_image" format="reference" />
+        <attr name="empty_uri_image" format="reference" />
+        <attr name="fail_image" format="reference" />
+        <attr name="cache_memory" format="boolean" />
+        <attr name="cache_disc" format="boolean" />
+        <attr name="round_angle" format="integer" />
+    </declare-styleable>
+</resources>

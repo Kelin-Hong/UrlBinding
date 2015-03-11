@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.kelin.library">
+
+    <application android:allowBackup="true" android:label="@string/app_name"
+        android:name=".UrlBindingApp"
+        android:icon="@drawable/ic_launcher">
+        <provider
+            android:name="com.kelin.library.dao.DataProvider"
+            android:authorities="com.kelin.project"
+            android:exported="false">
+            <grant-uri-permission android:pathPattern=".*" />
+        </provider>
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+</manifest>

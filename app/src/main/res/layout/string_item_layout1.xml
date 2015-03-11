@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://robobinding.org/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix">
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        bind:text="{data_homepage_name}" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        bind:src="{data_homepage_src}" />
+    <com.kelin.library.widget.NetImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:cache_disc="true"
+        app:cache_memory="true"
+        app:empty_uri_image="@drawable/travel__topic_bg_normal"
+        bind:url="{data_homepage_iconUrl}" />
+
+</LinearLayout>

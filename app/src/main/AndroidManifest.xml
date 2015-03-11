@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kelin.urlbinding" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="Main/Demo1" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TopicListActivity"
+            android:label="Main/Demo2" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TestActivity"
+            android:label="Main/Demo3" />
+
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="com.kelin.uribinding.main.DEMO" />
+        </intent-filter>
+
+        <activity
+            android:name=".CategoryActivity"
+            android:label="Main/Demo4" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="www.kelin.com"
+                    android:path="/volga/api/v2/trip/zhoubianyou/cate/menu"
+                    android:scheme="kelin" />
+                <data
+                    android:host="www.kelin.com"
+                    android:path="/volga/api/v2/trip/zhoubianyou/cate/menu/"
+                    android:scheme="kelin" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".demo.FunctionListActivity"
+            android:label="@string/title_activity_function_list" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".demo.SimpleListActivity"
+            android:label="@string/title_activity_simple_list" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".demo.CacheListActivity"
+            android:label="@string/title_activity_simple_list_cache" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".demo.LoadFromDBActivity"
+            android:label="@string/title_activity_load_from_db" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
