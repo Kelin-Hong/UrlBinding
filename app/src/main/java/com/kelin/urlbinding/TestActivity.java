@@ -51,8 +51,8 @@ public class TestActivity extends BaseActivity {
 //        int id = cursor.getInt(cursor.getColumnIndex("_id"));
 //        List<Cursor> cursorList = new ArrayList<Cursor>();
 //        cursorList.add(cursor);
-        jsonData = new JsonData(this, uri.toString());
-        jsonData.updateAndChangeDB("stid", "呵呵呵呵呵");
+//        jsonData = new JsonData(this, uri.toString());
+        jsonData.getJsonPrimary().updateAndChangeDB("stid", "呵呵呵呵呵");
 //        mTextView.setText(jsonData.get("stid").toString());
     }
 

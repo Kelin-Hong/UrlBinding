@@ -94,6 +94,24 @@
                 <category android:name="com.kelin.uribinding.main.DEMO" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".demo.ChangeModelBeforeShowActivity"
+            android:label="@string/title_activity_change_model_before_show_db" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".demo.EventBindingActivity"
+            android:label="@string/title_activity_event_binding" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

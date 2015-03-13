@@ -9,16 +9,16 @@ import android.view.MenuItem;
 import com.kelin.library.base.BaseFragment;
 import com.kelin.urlbinding.R;
 
-public class LoadFromDBActivity extends ActionBarActivity {
+public class EventBindingActivity extends ActionBarActivity {
     private final static String mUrl = "http://lvyou.meituan.com/volga/api/v2/trip/zhoubianyou/cate/menu?cityId=1&version=5.4&client=android";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_list);
-        BaseFragment baseFragment = CacheListFragment.newInstance(mUrl, R.layout.fragment_simple_list, true);
+        BaseFragment baseFragment = EventBindingFragment.newInstance(mUrl, R.layout.fragment_event_binding_list, true);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content, baseFragment);
+        transaction.replace(com.kelin.library.R.id.content, baseFragment);
         transaction.commit();
     }
 
@@ -26,7 +26,7 @@ public class LoadFromDBActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_load_from_db, menu);
+        getMenuInflater().inflate(R.menu.menu_event_binding, menu);
         return true;
     }
 

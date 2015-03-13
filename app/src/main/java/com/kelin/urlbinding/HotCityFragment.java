@@ -62,12 +62,12 @@ public class HotCityFragment extends BaseFragment {
 
     @Override
     public void onDataLoadedFinish(JsonData data, VolleyError volleyError) {
-        data.addAndChangeDB("visibility", true);
-        Drawable drawable= getResources().getDrawable(R.drawable.ic_launcher);
-        for(int i=0;i< ((JsonListData)data.getList("data_homepage")).getSize();i++) {
-            ((JsonListData)data.getList("data_homepage")).get(i).add("src",drawable);
+        data.getJsonPrimary().add("visibility", true);
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
+        for (int i = 0; i < ((JsonListData) data.getList("data_homepage")).getSize(); i++) {
+            ((JsonListData) data.getList("data_homepage")).get(i).add("src", drawable);
         }
-        data.add("background", drawable);
+        data.getJsonPrimary().add("background", drawable);
     }
 
 

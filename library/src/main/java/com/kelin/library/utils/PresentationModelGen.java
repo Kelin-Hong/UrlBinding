@@ -26,7 +26,7 @@ public class PresentationModelGen {
 
     public static Object generatePresentationModel(Context context, String className, JsonData jsonData) throws Exception {
         ArrayList<String> fieldNames = new ArrayList<>();
-        fieldNames.addAll(jsonData.getJsonPrimaryHashMap().keySet());
+        fieldNames.addAll(jsonData.getJsonPrimary().keySet());
         fieldNames.addAll(jsonData.getListDataHashMap().keySet());
         String classWithPackageName = String.format(DEX_PACKAGE_NAME, className);
         String classGeneratePath = String.format(DEX_PATH, className);
@@ -48,7 +48,7 @@ public class PresentationModelGen {
 
     public static Object generatePresentationModel(Context context, String className, Class PresentationModelParentClass, JsonData jsonData) throws Exception {
         ArrayList<String> fieldNames = new ArrayList<>();
-        fieldNames.addAll(jsonData.getJsonPrimaryHashMap().keySet());
+        fieldNames.addAll(jsonData.getJsonPrimary().keySet());
         fieldNames.addAll(jsonData.getListDataHashMap().keySet());
         String classWithPackageName = String.format(DEX_PACKAGE_NAME, className);
         String classGeneratePath = String.format(DEX_PATH, className);

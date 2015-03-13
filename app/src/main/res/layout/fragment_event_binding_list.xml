@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://robobinding.org/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix">
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:text="stid:" />-->
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--bind:text="{stid}" />-->
+    <!--</LinearLayout>-->
+
+    <Button
+        android:id="@+id/change_list"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="delete first item!"
+        bind:onClick="deleteFirstItem" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="change first item!"
+        bind:onClick="changeFirstItem" />
+
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4"
+        bind:itemLayout="@layout/listitem_fragment_simple_list"
+        bind:onItemClick="categoryItemClick"
+        bind:source="{data_homepage}" />
+
+</LinearLayout>

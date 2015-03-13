@@ -18,7 +18,7 @@ public class CacheListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_simple_list);
         BaseFragment baseFragment = CacheListFragment.newInstance(mUrl, R.layout.fragment_simple_list, "category");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(com.kelin.library.R.id.content, baseFragment);
+        transaction.replace(R.id.content, baseFragment);
         transaction.commit();
     }
 

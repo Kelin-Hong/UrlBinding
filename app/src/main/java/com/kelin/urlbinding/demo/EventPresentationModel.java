@@ -1,20 +1,18 @@
-package com.kelin.urlbinding;
+package com.kelin.urlbinding.demo;
 
 import android.content.Intent;
 
 import com.kelin.library.viewmodel.PresentationModelParent;
+import com.kelin.urlbinding.TestActivity;
 
 import org.robobinding.widget.adapterview.ItemClickEvent;
 
-
 /**
- * Created by kelin on 15-2-12.
+ * Created by kelin on 15-3-13.
  */
-
 @org.robobinding.annotation.PresentationModel
-public class FunctionPresentationModel extends PresentationModelParent {
-
-    public void onItemClick(ItemClickEvent event) {
+public class EventPresentationModel extends PresentationModelParent {
+    public void categoryItemClick(ItemClickEvent event) {
 //        mJsonData.updateAndChangeDB("visibility",false);
 //        mJsonData.updateAndChangeDB("stid", "呵呵呵呵呵");
 //        changeSupport.firePropertyChange("stid");
@@ -24,18 +22,13 @@ public class FunctionPresentationModel extends PresentationModelParent {
 
     }
 
-    public void changeFooterVisibility() {
-//        mJsonData.getList("data_homepage").remove(0);
-//        mJsonData.getList("data_homepage").remove(0);
-//        mJsonData.getList("data_homepage").remove(0);
-//        mJsonData.getList("data_homepage").remove(0);
-//        mJsonData.getList("data_homepage").remove(0);
+    public void deleteFirstItem() {
         mJsonData.getList("data_homepage").removeAndChangeDB(0);
-        mJsonData.getList("data_homepage").removeAndChangeDB(0);
-
-        mJsonData.getList("data_homepage").getJsonListItems().get(0).updateAddChangeDB("name", "哈哈哈哈");
         changeSupport.firePropertyChange("data_homepage");
     }
 
-
+    public void changeFirstItem() {
+        mJsonData.getList("data_homepage").getJsonListItems().get(0).updateAddChangeDB("name", "哈哈哈哈");
+        changeSupport.firePropertyChange("data_homepage");
+    }
 }

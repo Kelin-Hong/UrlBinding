@@ -7,9 +7,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.kelin.library.dao.ContentValueUtils;
 import com.kelin.library.dao.DataProvider;
+
+import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,21 +28,39 @@ public class JsonListData {
     private String url;
     private String name;
     private int size;
+    private PresentationModelChangeSupport changeSupport;
     private Set<String> allFieldName = new HashSet<>();
     private Set<String> allFieldWithName = new HashSet<>();
-    private List<JsonListItem> jsonListItems=new ArrayList<>();
-    private boolean mListDataIsModel2DB = false;
+    private List<JsonListItem> jsonListItems = new ArrayList<>();
+
+    public void setmListDataIsModel2DB(boolean mListDataIsModel2DB) {
+        this.mListDataIsModel2DB = mListDataIsModel2DB;
+    }
+
+    private boolean mListDataIsModel2DB = true;
+
+    public ContentObserver getListContentObserver() {
+        return listContentObserver;
+    }
+
     private ContentObserver listContentObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-            if (mListDataIsModel2DB) {
-                mListDataIsModel2DB = false;
-                return;
-            }
-            Cursor cursor = context.getContentResolver().query(listUri, null, DataProvider.COLUMN_URI_MD5 + "= ?", new String[]{UtilMethod.getMD5Str(url)}, null);
-
+            Log.v("Uri-Change", "onChange  ");
+//            if (mListDataIsModel2DB) {
+//                mListDataIsModel2DB = false;
+//                return;
+//            }
+//            if (url != null && listUri != null) {
+//                setJsonListItems(listUri, url);
+//            }
+//            if (changeSupport != null) {
+//                changeSupport.refreshPresentationModel();
+//            }
         }
+
+
     };
 
     public JsonListData(String name, Context context, String url) {
@@ -53,7 +74,6 @@ public class JsonListData {
         this.context = context;
         this.url = url;
         setJsonListItems(uri, url);
-
     }
 
     public void setListUri(final Uri listUri) {
@@ -66,38 +86,28 @@ public class JsonListData {
         this.jsonListItems = jsonListItems;
     }
 
-    public void setJsonListItems(Uri listUri, String url) {
-        Cursor cursor = context.getContentResolver().query(listUri, null, DataProvider.COLUMN_URI_MD5 + "= ?", new String[]{UtilMethod.getMD5Str(url)}, null);
-        while (cursor.moveToNext()) {
-            String tableName = cursor.getString(cursor.getColumnIndex(DataProvider.COLUMN_TABLE_NAME));
-            this.name = tableName.substring(tableName.indexOf("_") + 1);
-            Uri itemUri = listUri.buildUpon().appendPath(String.valueOf(cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)))).build();
-            JsonListItem jsonListItem = new JsonListItem(context, this, name);
-            jsonListItem.loadDataFromDB(itemUri);
-            jsonListItems.add(jsonListItem);
-
+    public void setChangeSupport(PresentationModelChangeSupport changeSupport) {
+        this.changeSupport = changeSupport;
+        if (jsonListItems != null) {
+            for (JsonListItem jsonListItem : jsonListItems) {
+                jsonListItem.setChangeSupport(changeSupport);
+            }
         }
     }
 
+    public void setJsonListItems(Uri listUri, String url) {
+        Cursor cursor = context.getContentResolver().query(listUri, null, DataProvider.COLUMN_URI_MD5 + "= ?", new String[]{UtilMethod.getMD5Str(url)}, null);
+        while (cursor.moveToNext()) {
+//            String tableName = cursor.getString(cursor.getColumnIndex(DataProvider.COLUMN_TABLE_NAME));
+            String tableName = listUri.getLastPathSegment();
+            this.name = tableName.substring(tableName.indexOf("_") + 1);
+            Uri itemUri = listUri.buildUpon().appendPath(String.valueOf(cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)))).build();
+            JsonListItem jsonListItem = new JsonListItem(context,this,itemUri);
+            add(jsonListItem);
+        }
+        cursor.close();
+    }
 
-//    private List<JsonListItem> getJsonListItems(String name) {
-//        List<JsonListItem> jsonListItems = new ArrayList<>();
-//        JsonListItem item = null;
-//        for (Iterator<String> iterator = jsonMap.keySet().iterator(); iterator.hasNext(); ) {
-//            String jsonName = iterator.next();
-//            if (jsonName.contains("$") && jsonName.startsWith(name)) {
-//                String subName = jsonName.substring(name.length());
-//                String fieldName = subName.substring(subName.lastIndexOf('_') + 1);
-//                if (item == null || item.listItem.containsKey(fieldName)) {
-//                    item = new JsonListItem(context,null,name);
-//                    jsonListItems.add(item);
-//                }
-//                item.listItem.put(fieldName, jsonMap.get(jsonName));
-//                item.listName = name;
-//            }
-//        }
-//        return jsonListItems;
-//    }
 
     public String getName() {
         return name;
@@ -129,6 +139,9 @@ public class JsonListData {
 
     public void add(JsonListItem item) {
         jsonListItems.add(item);
+        if (item.getJsonListData() != null) {
+            item.setJsonListData(this);
+        }
     }
 
 
@@ -136,8 +149,11 @@ public class JsonListData {
         return jsonListItems.remove(index);
     }
 
-    public JsonListItem removeAndChangeD(int index) {
-        mListDataIsModel2DB = true;
+    public boolean remove(JsonListItem jsonListItem) {
+        return jsonListItems.remove(jsonListItem);
+    }
+
+    public JsonListItem removeAndChangeDB(int index) {
         int count = context.getContentResolver().delete(jsonListItems.get(index).getItemUri(), null, null);
         if (count > 0) {
             JsonListItem item = jsonListItems.remove(index);
@@ -148,12 +164,14 @@ public class JsonListData {
 
     public void addAndChangeDB(JsonListItem item) {
         jsonListItems.add(item);
+        if (item.getJsonListData() != null) {
+            item.setJsonListData(this);
+        }
         if (listUri != null) {
             ContentValues contentValues = new ContentValues();
             for (String key : item.getJsonFieldMap().keySet())
                 ContentValueUtils.insertContentValues(contentValues, key, item.get(key));
-            mListDataIsModel2DB = true;
-            context.getContentResolver().update(listUri, contentValues, null, null);
+            context.getContentResolver().insert(listUri, contentValues);
         }
 
     }

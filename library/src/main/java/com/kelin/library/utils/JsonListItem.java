@@ -9,6 +9,8 @@ import android.os.Handler;
 
 import com.kelin.library.dao.ContentValueUtils;
 
+import org.robobinding.presentationmodel.PresentationModelChangeSupport;
+
 import java.util.HashMap;
 
 /**
@@ -24,34 +26,66 @@ public class JsonListItem {
 
     private String listName;
 
-    private boolean mListItemIsModel2DB = false;
+    private boolean mIsModel2DB = true;
+
+    private PresentationModelChangeSupport changeSupport;
 
     private HashMap<String, Object> jsonFieldMap = new HashMap<>();
 
+    public ContentObserver getmContentObserver() {
+        return mContentObserver;
+    }
 
-    private ContentObserver listContentObserver = new ContentObserver(new Handler()) {
+    private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
+
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-            if (mListItemIsModel2DB) {
-                mListItemIsModel2DB = false;
+            if (mIsModel2DB) {
+                mIsModel2DB = false;
                 return;
             }
             loadDataFromDB(itemUri);
+            if (changeSupport != null) {
+                changeSupport.refreshPresentationModel();
+            }
+
+        }
+
+        private boolean isNumber(String s) {
+            try {
+                Integer.parseInt(s);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+
         }
     };
 
 
-    public JsonListItem(Context context, JsonListData jsonListData, String listName) {
+    public JsonListItem(Context context, JsonListData jsonListData) {
         this.context = context;
         this.jsonListData = jsonListData;
-        this.listName = listName;
+    }
+
+
+    public JsonListItem(Context context, JsonListData jsonListData, Uri uri) {
+        this.context = context;
+        this.jsonListData = jsonListData;
+        loadDataFromDB(uri);
     }
 
     public void loadDataFromDB(Uri itemUri) {
         this.itemUri = itemUri;
         Cursor cursor = context.getContentResolver().query(itemUri, null, null, null, null);
         cursor.moveToFirst();
+        if (cursor.getCount() <= 0) {
+            if (jsonListData != null) {
+                jsonListData.remove(this);
+            }
+            return;
+        }
         for (String columnName : cursor.getColumnNames()) {
             String jsonItemKey = columnName.substring(columnName.indexOf("_") + 1);
             switch (cursor.getType(cursor.getColumnIndex(columnName))) {
@@ -86,20 +120,31 @@ public class JsonListItem {
         return jsonFieldMap;
     }
 
-    public void setListName(String listName) {
-        this.listName = listName;
-    }
 
     public void setItemUri(Uri itemUri) {
         this.itemUri = itemUri;
+        context.getContentResolver().registerContentObserver(this.itemUri, false, mContentObserver);
+    }
+
+    public JsonListData getJsonListData() {
+        return jsonListData;
+    }
+
+    public void setChangeSupport(PresentationModelChangeSupport changeSupport) {
+        this.changeSupport = changeSupport;
+    }
+
+    public void setJsonListData(JsonListData jsonListData) {
+        this.jsonListData = jsonListData;
+        this.listName = jsonListData.getName();
     }
 
     public void add(String key, Object value) {
         jsonFieldMap.put(key, value);
-        if (listName != null && !jsonListData.getAllFieldWithName().contains(key)) {
-            jsonListData.getAllFieldWithName().add(listName + "_" + key);
+        if (!jsonListData.getAllFieldWithName().contains(key)) {
+            jsonListData.getAllFieldWithName().add(jsonListData.getName() + "_" + key);
         }
-        if (listName != null && !jsonListData.getAllFieldName().contains(key)) {
+        if (!jsonListData.getAllFieldName().contains(key)) {
             jsonListData.getAllFieldName().add(key);
         }
     }
@@ -126,7 +171,7 @@ public class JsonListItem {
         if (itemUri != null) {
             ContentValues contentValues = new ContentValues();
             ContentValueUtils.insertContentValues(contentValues, key, value);
-            mListItemIsModel2DB = false;
+            mIsModel2DB = false;
             context.getContentResolver().insert(itemUri, contentValues);
         }
     }
@@ -137,7 +182,7 @@ public class JsonListItem {
             if (itemUri != null) {
                 ContentValues contentValues = new ContentValues();
                 ContentValueUtils.insertContentValues(contentValues, key, value);
-                mListItemIsModel2DB = false;
+                mIsModel2DB = false;
                 context.getContentResolver().update(itemUri, contentValues, null, null);
             }
             return true;
@@ -151,12 +196,16 @@ public class JsonListItem {
             ContentValues contentValues = new ContentValues();
             contentValues.putNull(fieldName);
             if (itemUri != null) {
-                mListItemIsModel2DB = false;
+                mIsModel2DB = false;
                 context.getContentResolver().update(itemUri, contentValues, null, null);
             }
             return true;
         }
         return false;
+    }
+
+    public void setmIsModel2DB(boolean mIsModel2DB) {
+        this.mIsModel2DB = mIsModel2DB;
     }
 
 }

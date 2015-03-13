@@ -2,11 +2,7 @@ package com.kelin.library.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.ContentObserver;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Handler;
-import android.provider.BaseColumns;
 
 import com.kelin.library.base.BaseFragment;
 import com.kelin.library.dao.ContentValueUtils;
@@ -32,15 +28,7 @@ public class JsonData {
 
     private Context context;
 
-    private boolean mIsModel2DB = false;
-
-    private PresentationModelChangeSupport changeSupport;
-
-    private Uri mUri;
-
-    private String mUrl;
-
-    private boolean isCacheDB = true;
+    private JsonPrimary jsonPrimary;
 
     private HashMap<String, JsonListData> listDataHashMap = new HashMap<>();
 
@@ -52,53 +40,22 @@ public class JsonData {
 
     private HashMap<String, Integer> jsonArraySize = new HashMap<String, Integer>();
 
-    private HashMap<String, Object> jsonPrimaryHashMap = new HashMap<>();
 
-    private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-            if (mIsModel2DB) {
-                mIsModel2DB = false;
-                return;
-            }
-            onChange(selfChange, null);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            super.onChange(selfChange);
-            if (uri != null) {
-                if (uri.toString().equals(mUrl)) {
-                    addCursorToJsonPrimaryHashMap(mUri);
-                    if (changeSupport != null) {
-                        changeSupport.refreshPresentationModel();
-                    }
-                }
-            } else {
-                addCursorToJsonPrimaryHashMap(mUri);
-                if (changeSupport != null) {
-                    changeSupport.refreshPresentationModel();
-                }
-            }
-        }
-    };
-
-    public JsonData(BaseFragment fragment, JSONObject jsonObject, String tableName, String url) {
+    public JsonData(BaseFragment fragment, JSONObject jsonObject) {
         this.mFragment = fragment;
         this.context = fragment.getActivity();
-        this.mUrl = url;
         parseJsonObjec("", jsonObject);
         for (String listName : jsonListName) {
-            JsonListData jsonListData = new JsonListData(listName, context, mUrl);
+            JsonListData jsonListData = new JsonListData(listName, context, fragment.getmUrl());
             jsonListData.setJsonListItems(getJsonListItems(listName, jsonListData));
             listDataHashMap.put(listName, jsonListData);
         }
+        jsonPrimary = new JsonPrimary(fragment);
         for (String objectName : jsonObjectName) {
-            jsonPrimaryHashMap.put(objectName, jsonMap.get(objectName));
+            jsonPrimary.add(objectName, jsonMap.get(objectName));
         }
-        if (tableName != null) {
-            cacheToDB(this, tableName, url);
+        if (mFragment.getmTableName() != null) {
+            cacheToDB(this, mFragment.getmTableName(), mFragment.getmUrl());
         }
     }
 
@@ -111,7 +68,7 @@ public class JsonData {
                 String subName = jsonName.substring(listName.length());
                 String fieldName = subName.substring(subName.lastIndexOf('_') + 1);
                 if (item == null || item.getJsonFieldMap().containsKey(fieldName)) {
-                    item = new JsonListItem(context, jsonListData, listName);
+                    item = new JsonListItem(context, jsonListData);
                     items.add(item);
                 }
                 item.add(fieldName, jsonMap.get(jsonName));
@@ -133,95 +90,51 @@ public class JsonData {
 //        }
 //    }
 
-    public JsonData(BaseFragment fragment, String url) {
-        this.mUrl = url;
+
+    public JsonData(BaseFragment fragment) {
         this.mFragment = fragment;
         this.context = fragment.getActivity();
-        List<Uri> uriList = UriConvertUtil.getDataUri(Uri.parse(url));
+        List<Uri> uriList = UriConvertUtil.getDataUri(Uri.parse(fragment.getmUrl()));
         for (Uri uri : uriList) {
-            if (!uri.toString().contains("_")) {
-                addCursorToJsonPrimaryHashMap(uri);
+            if (!uri.getLastPathSegment().contains("_")) {
+                jsonPrimary = new JsonPrimary(mFragment, uri);
             } else {
-                JsonListData jsonListData = new JsonListData(context, mUrl, uri);
+                JsonListData jsonListData = new JsonListData(context, fragment.getmUrl(), uri);
                 listDataHashMap.put(jsonListData.getName(), jsonListData);
             }
         }
     }
 
-    public JsonData(Context context, String url) {
-        this.mUrl = url;
-        this.context = context;
-        List<Uri> uriList = UriConvertUtil.getDataUri(Uri.parse(url));
-        for (Uri uri : uriList) {
-            if (!uri.toString().contains("_")) {
-                addCursorToJsonPrimaryHashMap(uri);
-            } else {
-                JsonListData jsonListData = new JsonListData(context, mUrl, uri);
-                listDataHashMap.put(jsonListData.getName(), jsonListData);
-            }
-        }
-    }
+//    public JsonData(Context context, String url) {
+//        this.context = context;
+//        List<Uri> uriList = UriConvertUtil.getDataUri(Uri.parse(url));
+//        for (Uri uri : uriList) {
+//            if (!uri.getLastPathSegment().contains("_")) {
+//                jsonPrimary=new JsonPrimary(mFragment,uri);
+//            } else {
+//                JsonListData jsonListData = new JsonListData(context, null, uri);
+//                listDataHashMap.put(jsonListData.getName(), jsonListData);
+//            }
+//        }
+//    }
 
-    public JsonData(BaseFragment fragment, Uri loadUri, String url) {
-        this.mUrl = url;
+    public JsonData(BaseFragment fragment, Uri loadUri) {
         this.mFragment = fragment;
         this.context = fragment.getActivity();
-        if (!loadUri.toString().contains("_")) {
-            addCursorToJsonPrimaryHashMap(loadUri);
+        if (!loadUri.getLastPathSegment().contains("_")) {
+            jsonPrimary = new JsonPrimary(mFragment, loadUri);
         } else {
-            JsonListData jsonListData = new JsonListData(context, mUrl, loadUri);
+            JsonListData jsonListData = new JsonListData(context, mFragment.getmUrl(), loadUri);
             listDataHashMap.put(jsonListData.getName(), jsonListData);
         }
 
     }
 
-    public void setmUri(Uri mUri) {
-        this.mUri = mUri;
-        context.getContentResolver().registerContentObserver(mUri, false, mContentObserver);
-    }
-
     public void setChangeSupport(PresentationModelChangeSupport changeSupport) {
-        this.changeSupport = changeSupport;
-    }
-
-
-    private void addCursorToJsonPrimaryHashMap(Uri uri) {
-        Cursor cursor = context.getContentResolver().query(uri, null, DataProvider.COLUMN_URI_MD5 + "= ?", new String[]{UtilMethod.getMD5Str(mUrl)}, null);
-        cursor.moveToFirst();
-        if (cursor == null || cursor.getCount() <= 0) {
-            return;
+        jsonPrimary.setChangeSupport(changeSupport);
+        for (JsonListData jsonListData : listDataHashMap.values()) {
+            jsonListData.setChangeSupport(changeSupport);
         }
-        for (String columnName : cursor.getColumnNames()) {
-            if (columnName.equals(BaseColumns._ID)) {
-                String id = String.valueOf(cursor.getInt(cursor.getColumnIndex(columnName)));
-                setmUri(uri.buildUpon().appendEncodedPath(id).build());
-                continue;
-            }
-            String key = columnName.substring(columnName.indexOf("_") + 1);
-            switch (cursor.getType(cursor.getColumnIndex(columnName))) {
-                case Cursor.FIELD_TYPE_INTEGER:
-                    if (jsonPrimaryHashMap.containsKey(key) && jsonPrimaryHashMap.get(key) instanceof Boolean) {
-                        Boolean aBoolean = (cursor.getInt(cursor.getColumnIndex(columnName)) == 1 ? true : false);
-                        add(key, aBoolean);
-                    } else {
-                        add(key, cursor.getInt(cursor.getColumnIndex(columnName)));
-                    }
-                    break;
-                case Cursor.FIELD_TYPE_FLOAT:
-                    add(key, cursor.getFloat(cursor.getColumnIndex(columnName)));
-                    break;
-                case Cursor.FIELD_TYPE_BLOB:
-                    add(key, cursor.getBlob(cursor.getColumnIndex(columnName)));
-                    break;
-                case Cursor.FIELD_TYPE_STRING:
-                    add(key, cursor.getString(cursor.getColumnIndex(columnName)));
-                    break;
-                case Cursor.FIELD_TYPE_NULL:
-                    break;
-            }
-        }
-        cursor.close();
-
     }
 
 
@@ -230,12 +143,12 @@ public class JsonData {
         Uri dataUri = UriConvertUtil.getDataUri(Uri.parse(url), tableName);
         DataProvider.addUriMatcherToDB(context, dataUri, tableName);
         ContentValues values = new ContentValues();
-        for (String key : jsonData.getJsonPrimaryHashMap().keySet()) {
-            ContentValueUtils.insertContentValues(values, key, jsonData.getJsonPrimaryHashMap().get(key));
+        for (String key : jsonData.jsonPrimary.keySet()) {
+            ContentValueUtils.insertContentValues(values, key, jsonData.jsonPrimary.get(key));
         }
         values.put(DataProvider.COLUMN_URI_MD5, queryMd5);
         Uri returnUri = context.getContentResolver().insert(dataUri, values);
-        setmUri(returnUri);
+        jsonPrimary.setmUri(returnUri);
         String uriId = returnUri.getLastPathSegment();
         for (String keyItem : jsonData.getListDataHashMap().keySet()) {
             String listTableName = tableName + "_" + keyItem;
@@ -248,8 +161,9 @@ public class JsonData {
                     ContentValueUtils.insertContentValues(values, columnName, item.get(columnName));
                 }
                 values.put(DataProvider.COLUMN_URI_ID, Integer.parseInt(uriId));
-                values.put(DataProvider.COLUMN_TABLE_NAME, listTableName);
+//                values.put(DataProvider.COLUMN_TABLE_NAME, listTableName);
                 values.put(DataProvider.COLUMN_URI_MD5, queryMd5);
+                item.setmIsModel2DB(true);
                 item.setItemUri(context.getContentResolver().insert(listDataUri, values));
             }
         }
@@ -293,17 +207,6 @@ public class JsonData {
         return listDataHashMap;
     }
 
-    public HashMap<String, Object> getJsonPrimaryHashMap() {
-        return jsonPrimaryHashMap;
-    }
-
-    public Object get(String name) {
-        if (jsonPrimaryHashMap.containsKey(name)) {
-            return jsonPrimaryHashMap.get(name);
-        }
-        return null;
-    }
-
     public JsonListData getList(String name) {
         return listDataHashMap.get(name);
     }
@@ -312,79 +215,18 @@ public class JsonData {
         return mFragment;
     }
 
-    public Uri getmUri() {
-        return mUri;
+    public JsonPrimary getJsonPrimary() {
+        return jsonPrimary;
     }
 
-
-    public void add(String key, Object value) {
-        if (jsonPrimaryHashMap.containsKey(key)) {
-            if (!jsonPrimaryHashMap.get(key).equals(value)) {
-                jsonPrimaryHashMap.put(key, value);
-//                changeSupport.firePropertyChange(key);
+    public void unRegisterContentObserver() {
+        context.getContentResolver().unregisterContentObserver(jsonPrimary.getmContentObserver());
+        for (String keyItem : listDataHashMap.keySet()) {
+            context.getContentResolver().unregisterContentObserver(getList(keyItem).getListContentObserver());
+            for (JsonListItem item : getList(keyItem).getJsonListItems()) {
+                context.getContentResolver().unregisterContentObserver(item.getmContentObserver());
             }
-        } else {
-            jsonPrimaryHashMap.put(key, value);
-//            changeSupport.firePropertyChange(key);
         }
-
-    }
-
-    public boolean update(String key, Object value) {
-        if (jsonPrimaryHashMap.containsKey(key)) {
-            jsonPrimaryHashMap.put(key, value);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean remove(String fieldName) {
-        if (jsonPrimaryHashMap.containsKey(fieldName)) {
-            jsonPrimaryHashMap.remove(fieldName);
-            return true;
-        }
-        return false;
-    }
-
-    public void addAndChangeDB(String key, Object value) {
-        if (mUri != null) {
-            ContentValues values = new ContentValues();
-            ContentValueUtils.insertContentValues(values, key, value);
-            mIsModel2DB = true;
-            context.getContentResolver().update(mUri, values, null, null);
-        }
-        jsonPrimaryHashMap.put(key, value);
-
-    }
-
-    public boolean updateAndChangeDB(String key, Object value) {
-        if (!jsonPrimaryHashMap.containsKey(key)) {
-            return false;
-        }
-        if (get(key).equals(value)) {
-            return false;
-        }
-        jsonPrimaryHashMap.put(key, value);
-        ContentValues values = new ContentValues();
-        ContentValueUtils.insertContentValues(values, key, value);
-        mIsModel2DB = true;
-        context.getContentResolver().update(mUri, values, null, null);
-        return true;
-    }
-
-    public boolean removeAndChangeDB(String fieldName) {
-        if (jsonPrimaryHashMap.containsKey(fieldName)) {
-            jsonPrimaryHashMap.remove(fieldName);
-            ContentValues contentValues = new ContentValues();
-            String columnName = new StringBuffer(ContentValueUtils.COLUMN_PREFIX).append(fieldName).toString();
-            contentValues.putNull(columnName);
-            if (mUri != null) {
-                mIsModel2DB = true;
-                context.getContentResolver().update(mUri, contentValues, null, null);
-            }
-            return true;
-        }
-        return false;
     }
 
 
@@ -485,7 +327,7 @@ public class JsonData {
 //            return items.remove(index);
 //        }
 //
-//        public JsonListItem removeAndChangeD(int index) {
+//        public JsonListItem removeAndChangeDB(int index) {
 //            mIsModel2DB = true;
 //            int count = context.getContentResolver().delete(items.get(index).itemUri, null, null);
 //            if (count > 0) {

@@ -6,8 +6,10 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_category">CategoryActivity</string>
     <string name="title_activity_function_list">FunctionListActivity</string>
-    <string name="title_activity_simple_list">Main/SimpleList</string>
-    <string name="title_activity_simple_list_cache">Main/CacheList</string>
-    <string name="title_activity_load_from_db">Main/LoadFromDB</string>
+    <string name="title_activity_simple_list">Main/1、SimpleList</string>
+    <string name="title_activity_simple_list_cache">Main/2、CacheList</string>
+    <string name="title_activity_load_from_db">Main/3、LoadFromDB</string>
+    <string name="title_activity_change_model_before_show_db">Main/4、ChangeModelBeforeShow</string>
+    <string name="title_activity_event_binding">Main/5、EventBindingActivity</string>
 
 </resources>

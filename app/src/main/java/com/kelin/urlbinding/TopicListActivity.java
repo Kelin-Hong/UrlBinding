@@ -34,7 +34,7 @@ public class TopicListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragmennt_base);
+//        setContentView(R.layout.fragmennt_base);
         Uri dataUri = new Uri.Builder().scheme("content").authority("com.kelin.project").appendEncodedPath("volga/api/v2/trip/zhoubianyou/cate/menu/category/1").build();
         Uri notifyUri = new Uri.Builder().scheme("content").authority("com.kelin.project").appendEncodedPath("volga/api/v2/trip/zhoubianyou/cate/menu/category/1").build();
         getContentResolver().registerContentObserver(dataUri, false, mContentObserver);

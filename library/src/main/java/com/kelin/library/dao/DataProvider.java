@@ -164,7 +164,8 @@ public class DataProvider extends ContentProvider {
             }
             if (rowId > 0) {
                 Uri returnUri = ContentUris.withAppendedId(uri, rowId);
-                getContext().getContentResolver().notifyChange(uri, null);
+                Log.v("Uri-Change", "insert" + returnUri.toString());
+                getContext().getContentResolver().notifyChange(returnUri, null);
                 return returnUri;
             }
             throw new SQLException("Failed to insert row into " + uri);

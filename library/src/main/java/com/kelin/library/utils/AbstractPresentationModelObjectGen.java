@@ -84,7 +84,7 @@ public class AbstractPresentationModelObjectGen {
 
     private static Set<String> generatePropertyNames(JsonData jsonData) {
         Set<String> set = Sets.newHashSet();
-        for (String name : jsonData.getJsonPrimaryHashMap().keySet()) {
+        for (String name : jsonData.getJsonPrimary().keySet()) {
             set.add(name);
         }
         return set;
@@ -125,20 +125,20 @@ public class AbstractPresentationModelObjectGen {
     }
 
     private static SimpleProperty generateTryToCreateProperty(Object proxy, final String name, final JsonData jsonData) {
-        Class type = jsonData.getJsonPrimaryHashMap().get(name).getClass();
+        Class type = jsonData.getJsonPrimary().get(name).getClass();
         PropertyDescriptor descriptor = new PropertyDescriptor(Object.class, type, name, true, true);
         AbstractGetSet<?> getSet = new AbstractGetSet<Object>(descriptor) {
             @Override
             public Object getValue() {
-                return jsonData.getJsonPrimaryHashMap().get(name);
+                return jsonData.getJsonPrimary().get(name);
             }
 
             @Override
             public void setValue(Object newValue) {
-                if (jsonData.getmUri() != null) {
-                    jsonData.updateAndChangeDB(name, newValue);
+                if (jsonData.getJsonPrimary().getmUri() != null) {
+                    jsonData.getJsonPrimary().updateAndChangeDB(name, newValue);
                 } else {
-                    jsonData.getJsonPrimaryHashMap().put(name, newValue);
+                    jsonData.getJsonPrimary().update(name, newValue);
                 }
             }
 

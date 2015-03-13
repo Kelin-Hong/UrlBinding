@@ -11,13 +11,14 @@ import com.kelin.library.utils.JsonData;
 /**
  * Created by kelin on 15-3-10.
  */
-public class SimpelListFragment extends BaseFragment{
-    public static SimpelListFragment newInstance(String url, int layoutId) {
-        SimpelListFragment simpelListFragment = new SimpelListFragment();
+public class EventBindingFragment extends BaseFragment {
+
+    public static EventBindingFragment newInstance(String url, int layoutId, boolean isFromDB) {
+        EventBindingFragment simpelListFragment = new EventBindingFragment();
         Bundle bundle = new Bundle();
         bundle.putString("url", url);
         bundle.putInt("layout_id", layoutId);
-//        bundle.putBoolean("from_db",true);
+        bundle.putBoolean("from_db", isFromDB);
         simpelListFragment.setArguments(bundle);
         return simpelListFragment;
     }
@@ -29,6 +30,11 @@ public class SimpelListFragment extends BaseFragment{
 
     @Override
     public void onDataLoadedFinish(JsonData jsonData, VolleyError volleyError) {
+        jsonData.getJsonPrimary().add("stid_visibility",false);
+    }
 
+    @Override
+    protected Class functionPresentationModelClass() {
+        return EventPresentationModel.class;
     }
 }
