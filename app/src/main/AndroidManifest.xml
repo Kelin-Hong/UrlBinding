@@ -8,34 +8,6 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
-            android:label="Main/Demo1" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="com.kelin.uribinding.main.DEMO" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".TopicListActivity"
-            android:label="Main/Demo2" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="com.kelin.uribinding.main.DEMO" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".TestActivity"
-            android:label="Main/Demo3" />
-
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="com.kelin.uribinding.main.DEMO" />
-        </intent-filter>
-
-        <activity
             android:name=".CategoryActivity"
             android:label="Main/Demo4" >
             <intent-filter>
@@ -111,6 +83,22 @@
 
                 <category android:name="com.kelin.uribinding.main.DEMO" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".demo.POIListActivity"
+            android:label="@string/title_activity_poi_list" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".demo.CategoryDetailActivity"
+            android:label="@string/title_activity_category_detail" >
+
         </activity>
     </application>
 

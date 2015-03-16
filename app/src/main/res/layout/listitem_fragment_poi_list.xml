@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://robobinding.org/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="5dp"
+    tools:ignore="MissingPrefix">
+
+    <com.kelin.library.widget.NetImageView
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        app:cache_disc="true"
+        app:cache_memory="true"
+        app:empty_uri_image="@drawable/travel__topic_bg_normal"
+        bind:url="{data_frontImg}" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textColor="@android:color/holo_blue_light"
+            bind:text="{data_name}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textColor="@android:color/holo_blue_light"
+            bind:text="{data_addr}" />
+    </LinearLayout>
+
+</LinearLayout>

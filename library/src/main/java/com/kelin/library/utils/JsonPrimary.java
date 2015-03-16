@@ -10,11 +10,12 @@ import android.provider.BaseColumns;
 
 import com.kelin.library.base.BaseFragment;
 import com.kelin.library.dao.ContentValueUtils;
-import com.kelin.library.dao.DataProvider;
 
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,9 +28,9 @@ public class JsonPrimary {
 
     private PresentationModelChangeSupport changeSupport;
 
-    private Uri mUri;
+    private List<Uri> mUris=new ArrayList<>();
 
-    private String mUrl;
+    private HashMap<String,Uri> fieldUriMap=new HashMap<>();
 
     private HashMap<String, Object> jsonPrimaryHashMap = new HashMap<>();
 
@@ -46,40 +47,38 @@ public class JsonPrimary {
                 mIsModel2DB = false;
                 return;
             }
-
-            addCursorToJsonPrimaryHashMap(mUri);
+            for (Uri uri : mUris) {
+                addCursorToJsonPrimaryHashMap(uri);
+            }
             if (changeSupport != null) {
                 changeSupport.refreshPresentationModel();
             }
-
         }
     };
 
     public JsonPrimary(BaseFragment fragment, Uri loadUri) {
-        this.mUrl = fragment.getmUrl();
         this.context = fragment.getActivity();
         addCursorToJsonPrimaryHashMap(loadUri);
     }
 
     public JsonPrimary(BaseFragment fragment) {
-        this.mUrl = fragment.getmUrl();
         this.context = fragment.getActivity();
     }
 
 
-    private void addCursorToJsonPrimaryHashMap(Uri uri) {
-        Cursor cursor = context.getContentResolver().query(uri, null, DataProvider.COLUMN_URI_MD5 + "= ?", new String[]{UtilMethod.getMD5Str(mUrl)}, null);
+    public void addCursorToJsonPrimaryHashMap(Uri uri) {
+        setmUri(uri);
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
         if (cursor == null || cursor.getCount() <= 0) {
             return;
         }
         for (String columnName : cursor.getColumnNames()) {
             if (columnName.equals(BaseColumns._ID)) {
-                String id = String.valueOf(cursor.getInt(cursor.getColumnIndex(columnName)));
-                setmUri(uri.buildUpon().appendEncodedPath(id).build());
                 continue;
             }
             String key = columnName.substring(columnName.indexOf("_") + 1);
+            fieldUriMap.put(key,uri);
             switch (cursor.getType(cursor.getColumnIndex(columnName))) {
                 case Cursor.FIELD_TYPE_INTEGER:
                     if (jsonPrimaryHashMap.containsKey(key) && jsonPrimaryHashMap.get(key) instanceof Boolean) {
@@ -111,7 +110,7 @@ public class JsonPrimary {
     }
 
     public void setmUri(Uri mUri) {
-        this.mUri = mUri;
+        mUris.add(mUri);
         context.getContentResolver().registerContentObserver(mUri, false, mContentObserver);
     }
 
@@ -127,6 +126,7 @@ public class JsonPrimary {
     }
 
     public void add(String key, Object value) {
+
         if (jsonPrimaryHashMap.containsKey(key)) {
             if (!jsonPrimaryHashMap.get(key).equals(value)) {
                 jsonPrimaryHashMap.put(key, value);
@@ -154,11 +154,11 @@ public class JsonPrimary {
     }
 
     public void addAndChangeDB(String key, Object value) {
-        if (mUri != null) {
+        if (fieldUriMap.get(key) != null) {
             ContentValues values = new ContentValues();
             ContentValueUtils.insertContentValues(values, key, value);
             mIsModel2DB = true;
-            context.getContentResolver().update(mUri, values, null, null);
+            context.getContentResolver().update(fieldUriMap.get(key), values, null, null);
         }
         jsonPrimaryHashMap.put(key, value);
 
@@ -171,11 +171,14 @@ public class JsonPrimary {
         if (get(key).equals(value)) {
             return false;
         }
+        if(fieldUriMap.get(key)==null){
+            return false;
+        }
         jsonPrimaryHashMap.put(key, value);
         ContentValues values = new ContentValues();
         ContentValueUtils.insertContentValues(values, key, value);
         mIsModel2DB = true;
-        context.getContentResolver().update(mUri, values, null, null);
+        context.getContentResolver().update(fieldUriMap.get(key), values, null, null);
         return true;
     }
 
@@ -185,17 +188,17 @@ public class JsonPrimary {
             ContentValues contentValues = new ContentValues();
             String columnName = new StringBuffer(ContentValueUtils.COLUMN_PREFIX).append(fieldName).toString();
             contentValues.putNull(columnName);
-            if (mUri != null) {
+            if (fieldUriMap.get(fieldName) != null) {
                 mIsModel2DB = true;
-                context.getContentResolver().update(mUri, contentValues, null, null);
+                context.getContentResolver().update(fieldUriMap.get(fieldName), contentValues, null, null);
             }
             return true;
         }
         return false;
     }
 
-    public Uri getmUri() {
-        return mUri;
+    public List<Uri> getmUris() {
+        return mUris;
     }
 
 }

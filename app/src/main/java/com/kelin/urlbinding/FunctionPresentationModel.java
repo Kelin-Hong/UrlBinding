@@ -19,8 +19,7 @@ public class FunctionPresentationModel extends PresentationModelParent {
 //        mJsonData.updateAndChangeDB("stid", "呵呵呵呵呵");
 //        changeSupport.firePropertyChange("stid");
 //        changeSupport.firePropertyChange("visibility");
-        Intent intent = new Intent(mJsonData.getmFragment().getActivity(), TestActivity.class);
-        mJsonData.getmFragment().getActivity().startActivity(intent);
+//        mJsonData.getmFragment().getActivity().startActivity(intent);
 
     }
 

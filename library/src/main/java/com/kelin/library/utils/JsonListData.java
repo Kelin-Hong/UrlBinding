@@ -76,6 +76,17 @@ public class JsonListData {
         setJsonListItems(uri, url);
     }
 
+    public JsonListData(Context context, List<Uri> itemUriList) {
+        this.context = context;
+        if (itemUriList != null && itemUriList.size() > 0) {
+            String path = itemUriList.get(0).getEncodedPath();
+            String newPath = path.substring(0, path.lastIndexOf('/'));
+            this.listUri = itemUriList.get(0).buildUpon().encodedPath(newPath).build();
+            setJsonListItemsByItemUris(itemUriList);
+        }
+    }
+
+
     public void setListUri(final Uri listUri) {
         this.listUri = listUri;
         context.getContentResolver().registerContentObserver(listUri, false, listContentObserver);
@@ -95,6 +106,13 @@ public class JsonListData {
         }
     }
 
+    public void setJsonListItemsByItemUris(List<Uri> listUri) {
+        for (Uri itemUri : listUri) {
+            JsonListItem jsonListItem = new JsonListItem(context, this, itemUri);
+            add(jsonListItem);
+        }
+    }
+
     public void setJsonListItems(Uri listUri, String url) {
         Cursor cursor = context.getContentResolver().query(listUri, null, DataProvider.COLUMN_URI_MD5 + "= ?", new String[]{UtilMethod.getMD5Str(url)}, null);
         while (cursor.moveToNext()) {
@@ -102,7 +120,7 @@ public class JsonListData {
             String tableName = listUri.getLastPathSegment();
             this.name = tableName.substring(tableName.indexOf("_") + 1);
             Uri itemUri = listUri.buildUpon().appendPath(String.valueOf(cursor.getInt(cursor.getColumnIndex(BaseColumns._ID)))).build();
-            JsonListItem jsonListItem = new JsonListItem(context,this,itemUri);
+            JsonListItem jsonListItem = new JsonListItem(context, this, itemUri);
             add(jsonListItem);
         }
         cursor.close();

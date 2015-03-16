@@ -1,4 +1,4 @@
-package com.kelin.urlbinding;
+package com.kelin.urlbinding.demo;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -7,21 +7,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kelin.library.base.BaseFragment;
+import com.kelin.urlbinding.R;
 
-
-public class CategoryActivity extends ActionBarActivity {
-    private String mUrl;
-
+public class POIListActivity extends ActionBarActivity {
+    private final static String mUrl = "http://lvyou.meituan.com/volga/api/v1/trip/poi/select/city/1?cateId=296&areaId=-1&cityId=1&selectedCityId=1&sort=tourstar&ste=_b1&offset=0&limit=20";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_category);
-        if (getIntent().getData() != null) {
-            mUrl = getIntent().getData().buildUpon().scheme("http").authority("lvyou.meituan.com").toString();
-        }
-        BaseFragment baseFragment = HotCityFragment.newInstance(mUrl, R.layout.fragment_hot_city);
+        setContentView(R.layout.activity_simple_list);
+        BaseFragment baseFragment = POIListFragment.newInstance(mUrl, R.layout.fragment_poi_list);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(com.kelin.library.R.id.content, baseFragment);
+        transaction.replace(R.id.content, baseFragment);
         transaction.commit();
     }
 
@@ -29,7 +25,7 @@ public class CategoryActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_category, menu);
+        getMenuInflater().inflate(R.menu.menu_simple_list, menu);
         return true;
     }
 

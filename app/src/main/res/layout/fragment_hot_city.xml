@@ -29,7 +29,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:numColumns="4"
-            bind:itemLayout="@layout/string_item_layout1"
+            bind:itemLayout="@layout/listitem_fragment_simple_list"
             bind:onItemClick="onItemClick"
             bind:source="{data_homepage}" />
     </uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout>

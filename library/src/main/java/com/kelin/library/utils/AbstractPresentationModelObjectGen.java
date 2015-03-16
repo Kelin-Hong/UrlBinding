@@ -102,20 +102,30 @@ public class AbstractPresentationModelObjectGen {
 
     private static SimpleProperty generateTryToCreateListItemProperty(Object proxy, final ListItemPresentationModelParent presentationModelParent, final String name, final JsonData jsonData, final String arrayName) {
         if (jsonData.getListDataHashMap().get(arrayName).getAllFieldWithName().contains(name)) {
-            String key = name.substring(arrayName.length() + 1);
+            final String key = name;
             Class type = presentationModelParent.getJsonListItem().get(key).getClass();
             PropertyDescriptor descriptor = new PropertyDescriptor(Object.class, type, name, true, true);
             AbstractGetSet<?> getSet = new AbstractGetSet<Object>(descriptor) {
+                private Object oldValue;
+
                 @Override
                 public Object getValue() {
-                    String key = name.substring(arrayName.length() + 1);
                     return presentationModelParent.getJsonListItem().get(key);
                 }
 
                 @Override
                 public void setValue(Object newValue) {
-                    String key = name.substring(arrayName.length() + 1);
-                    presentationModelParent.getJsonListItem().update(key, newValue);
+                    String key = name;
+                    if (presentationModelParent.getJsonListItem().getItemUri() != null) {
+                        if (newValue instanceof String) {
+                            if ((Math.abs(((String) newValue).length() - ((String) oldValue).length()) == 1)) {
+                                presentationModelParent.getJsonListItem().update(key, newValue);
+                            }
+                        }
+                        presentationModelParent.getJsonListItem().updateAddChangeDB(key, newValue);
+                    } else {
+                        presentationModelParent.getJsonListItem().update(key, newValue);
+                    }
                 }
 
             };
@@ -135,7 +145,7 @@ public class AbstractPresentationModelObjectGen {
 
             @Override
             public void setValue(Object newValue) {
-                if (jsonData.getJsonPrimary().getmUri() != null) {
+                if (jsonData.getJsonPrimary().getmUris().size()>0) {
                     jsonData.getJsonPrimary().updateAndChangeDB(name, newValue);
                 } else {
                     jsonData.getJsonPrimary().update(name, newValue);

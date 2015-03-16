@@ -71,9 +71,9 @@ public class FunctionListActivity extends ActionBarActivity {
         for (int i = 0; i < list.size(); i++) {
             ResolveInfo info = list.get(i);
             String lable = info.loadLabel(pm).toString();
-            if (lable.contains("/")) {
-                String[] lableArr = lable.split("/");
-                String title = lableArr[1];
+            if (lable.contains("、")) {
+//                String[] lableArr = lable.split("/");
+                String title = lable;
                 String packageName = info.activityInfo.applicationInfo.packageName;
                 String className = info.activityInfo.name;
                 Intent intent = new Intent();

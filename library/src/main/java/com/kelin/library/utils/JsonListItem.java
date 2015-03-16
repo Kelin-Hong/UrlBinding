@@ -77,7 +77,7 @@ public class JsonListItem {
     }
 
     public void loadDataFromDB(Uri itemUri) {
-        this.itemUri = itemUri;
+        setItemUri(itemUri);
         Cursor cursor = context.getContentResolver().query(itemUri, null, null, null, null);
         cursor.moveToFirst();
         if (cursor.getCount() <= 0) {
@@ -142,7 +142,7 @@ public class JsonListItem {
     public void add(String key, Object value) {
         jsonFieldMap.put(key, value);
         if (!jsonListData.getAllFieldWithName().contains(key)) {
-            jsonListData.getAllFieldWithName().add(jsonListData.getName() + "_" + key);
+            jsonListData.getAllFieldWithName().add(key);
         }
         if (!jsonListData.getAllFieldName().contains(key)) {
             jsonListData.getAllFieldName().add(key);

@@ -1,5 +1,6 @@
 package com.kelin.library.base;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,12 +14,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kelin.library.R;
 import com.kelin.library.loader.OnLoadFinishedListener;
 import com.kelin.library.utils.JsonData;
+import com.kelin.library.utils.UriConvertUtil;
 import com.kelin.library.viewmodel.PresentationModelParent;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BaseFragment extends android.support.v4.app.Fragment {
 
@@ -27,6 +34,7 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
     protected String mTableName;
     protected JsonData mJsonData;
     protected boolean mIsLoadFromDB = false;
+    protected List<Uri> uriList = new ArrayList<Uri>();
 
     protected PresentationModelParent mPresentationModel;
 
@@ -53,7 +61,18 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
             mLayoutId = getArguments().getInt("layout_id");
             mTableName = getArguments().getString("table_name");
             mIsLoadFromDB = getArguments().getBoolean("from_db", false);
+            String uriListStr = getArguments().getString("uri_list");
+            if (!(uriListStr == null || uriListStr.length() <= 0)) {
+                List<String> uris = new Gson().fromJson(uriListStr, new TypeToken<List<String>>() {
+                }.getType());
+                for (String uri : uris) {
+                    uriList.add(Uri.parse(uri));
+                }
+                return;
+            }
+
             if (mIsLoadFromDB) {
+                uriList = UriConvertUtil.getDataUri(getActivity(), Uri.parse(mUrl));
                 return;
             }
             if (mTableName != null) {
@@ -66,7 +85,14 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
 
 
     protected void loadDataFromDB(String url, final OnLoadFinishedListener onLoadFinishedListener) {
-        JsonData jsonData = new JsonData(BaseFragment.this);
+        JsonData jsonData = new JsonData(BaseFragment.this, url);
+        if (onLoadFinishedListener != null) {
+            onLoadFinishedListener.onLoadFinished(jsonData, null);
+        }
+    }
+
+    protected void loadDataFromDBByUriList(final OnLoadFinishedListener onLoadFinishedListener) {
+        JsonData jsonData = new JsonData(BaseFragment.this, uriList);
         if (onLoadFinishedListener != null) {
             onLoadFinishedListener.onLoadFinished(jsonData, null);
         }
@@ -127,8 +153,12 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.content, createLoadingFragment());
         transaction.commit();
-        if (mIsLoadFromDB) {
-            loadDataFromDB(mUrl, mOnLoadFinishedListener);
+//        if (mIsLoadFromDB) {
+//            loadDataFromDB(mUrl, mOnLoadFinishedListener);
+//        }
+        if (uriList.size() > 0) {
+            loadDataFromDBByUriList(mOnLoadFinishedListener);
+            return;
         }
     }
 

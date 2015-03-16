@@ -1,5 +1,6 @@
 package com.kelin.urlbinding.demo;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -29,8 +30,12 @@ public class ChangeModelBeforeShowFragment extends BaseFragment {
 
     @Override
     public void onDataLoadedFinish(JsonData jsonData, VolleyError volleyError) {
-        jsonData.getJsonPrimary().add("stid_visibility", false);
+        jsonData.getJsonPrimary().add("stid_visibility", true);
+        jsonData.getJsonPrimary().add("stid_textColor", getResources().getColor(android.R.color.holo_blue_dark));
         jsonData.getJsonPrimary().update("stid", "Hello UrlBinding");
-//      jsonData.getList("data_homepage").removeAndChangeDB(0);
+        Drawable drawable = getResources().getDrawable(android.R.drawable.btn_star);
+        for (int i = 0; i < jsonData.getList("data_homepage").getSize(); i++) {
+            jsonData.getList("data_homepage").get(i).add("data_homepage_src", android.R.drawable.btn_star);
+        }
     }
 }

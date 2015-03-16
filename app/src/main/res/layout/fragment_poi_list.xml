@@ -15,24 +15,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            bind:visibility="{stid_visibility}"
-            android:text="stid:" />
+            android:text="ct_poi:" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            bind:textColor="{stid_textColor}"
-            bind:visibility="{stid_visibility}"
-            bind:text="{stid}" />
+            bind:text="{ct_poi}" />
     </LinearLayout>
 
 
     <ListView
-        android:id="@+id/grid_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:numColumns="4"
-        bind:itemLayout="@layout/listitem_fragment_change_model_before_show"
-        bind:source="{data_homepage}" />
+        bind:itemLayout="@layout/listitem_fragment_poi_list"
+        bind:source="{data}" />
 
 </LinearLayout>
