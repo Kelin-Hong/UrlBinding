@@ -1,4 +1,4 @@
-package com.kelin.library.utils;
+package com.kelin.library.data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 
+import com.google.gson.Gson;
 import com.kelin.library.dao.ContentValueUtils;
+import com.kelin.library.data.JsonListData;
 
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
@@ -24,6 +26,8 @@ public class JsonListItem {
 
     private Uri itemUri;
 
+    private String mUrl;
+
     private String listName;
 
     private boolean mIsModel2DB = true;
@@ -36,7 +40,7 @@ public class JsonListItem {
         return mContentObserver;
     }
 
-    private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
+    private ContentObserver mContentObserver = new ContentObserver(null) {
 
         @Override
         public void onChange(boolean selfChange) {
@@ -75,6 +79,11 @@ public class JsonListItem {
         this.jsonListData = jsonListData;
         loadDataFromDB(uri);
     }
+
+    public String getJsonString() {
+        return new Gson().toJson(jsonFieldMap);
+    }
+
 
     public void loadDataFromDB(Uri itemUri) {
         setItemUri(itemUri);
@@ -207,5 +216,7 @@ public class JsonListItem {
     public void setmIsModel2DB(boolean mIsModel2DB) {
         this.mIsModel2DB = mIsModel2DB;
     }
+
+
 
 }

@@ -11,7 +11,7 @@
     <string name="title_activity_load_from_db">3、LoadFromDB</string>
     <string name="title_activity_change_model_before_show_db">4、ChangeModelBeforeShow</string>
     <string name="title_activity_event_binding">5、EventBindingActivity</string>
-    <string name="title_activity_category_detail">6、CategoryDetail</string>
+    <string name="title_activity_data_change_observer">7、Data Chang Observer(Memory)</string>
     <string name="title_activity_poi_list">6、POIList</string>
 
 </resources>

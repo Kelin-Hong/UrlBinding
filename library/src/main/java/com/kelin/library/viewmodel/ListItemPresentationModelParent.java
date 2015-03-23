@@ -1,7 +1,6 @@
 package com.kelin.library.viewmodel;
 
-import com.kelin.library.utils.JsonData;
-import com.kelin.library.utils.JsonListItem;
+import com.kelin.library.data.JsonListItem;
 
 import org.robobinding.itempresentationmodel.ItemContext;
 import org.robobinding.itempresentationmodel.ItemPresentationModel;

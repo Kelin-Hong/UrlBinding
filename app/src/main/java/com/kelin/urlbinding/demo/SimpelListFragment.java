@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.kelin.library.base.BaseFragment;
-import com.kelin.library.utils.JsonData;
+import com.kelin.library.data.JsonData;
 
 /**
  * Created by kelin on 15-3-10.
@@ -17,7 +17,6 @@ public class SimpelListFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putString("url", url);
         bundle.putInt("layout_id", layoutId);
-//        bundle.putBoolean("from_db",true);
         simpelListFragment.setArguments(bundle);
         return simpelListFragment;
     }

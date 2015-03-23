@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kelin.urlbinding" >
+    package="com.kelin.urlbinding">
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".CategoryActivity"
-            android:label="Main/Demo4" >
+            android:label="Main/Demo4">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,7 +32,7 @@
         </activity>
         <activity
             android:name=".demo.FunctionListActivity"
-            android:label="@string/title_activity_function_list" >
+            android:label="@string/title_activity_function_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +41,7 @@
         </activity>
         <activity
             android:name=".demo.SimpleListActivity"
-            android:label="@string/title_activity_simple_list" >
+            android:label="@string/title_activity_simple_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,7 +50,7 @@
         </activity>
         <activity
             android:name=".demo.CacheListActivity"
-            android:label="@string/title_activity_simple_list_cache" >
+            android:label="@string/title_activity_simple_list_cache">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -59,7 +59,7 @@
         </activity>
         <activity
             android:name=".demo.LoadFromDBActivity"
-            android:label="@string/title_activity_load_from_db" >
+            android:label="@string/title_activity_load_from_db">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -68,7 +68,7 @@
         </activity>
         <activity
             android:name=".demo.ChangeModelBeforeShowActivity"
-            android:label="@string/title_activity_change_model_before_show_db" >
+            android:label="@string/title_activity_change_model_before_show_db">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -77,7 +77,7 @@
         </activity>
         <activity
             android:name=".demo.EventBindingActivity"
-            android:label="@string/title_activity_event_binding" >
+            android:label="@string/title_activity_event_binding">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -87,7 +87,7 @@
 
         <activity
             android:name=".demo.POIListActivity"
-            android:label="@string/title_activity_poi_list" >
+            android:label="@string/title_activity_poi_list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -97,7 +97,12 @@
 
         <activity
             android:name=".demo.CategoryDetailActivity"
-            android:label="@string/title_activity_category_detail" >
+            android:label="category_detail">
+
+        </activity>
+        <activity
+            android:name=".demo.DataChangeObserverActivity"
+            android:label="@string/title_activity_data_change_observer">
 
         </activity>
     </application>

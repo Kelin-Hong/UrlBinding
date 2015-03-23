@@ -2,7 +2,7 @@ package com.kelin.urlbinding.demo;
 
 import android.content.Intent;
 
-import com.kelin.library.utils.JsonListItem;
+import com.kelin.library.data.JsonListItem;
 import com.kelin.library.viewmodel.PresentationModelParent;
 
 import org.robobinding.widget.adapterview.ItemClickEvent;

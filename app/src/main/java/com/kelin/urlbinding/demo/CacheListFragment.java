@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.kelin.library.base.BaseFragment;
-import com.kelin.library.utils.JsonData;
+import com.kelin.library.data.JsonData;
 
 /**
  * Created by kelin on 15-3-10.

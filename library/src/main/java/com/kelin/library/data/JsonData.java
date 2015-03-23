@@ -1,4 +1,4 @@
-package com.kelin.library.utils;
+package com.kelin.library.data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.net.Uri;
 import com.kelin.library.base.BaseFragment;
 import com.kelin.library.dao.ContentValueUtils;
 import com.kelin.library.dao.DataProvider;
+import com.kelin.library.utils.UriConvertUtil;
+import com.kelin.library.utils.UtilMethod;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,25 +85,12 @@ public class JsonData {
         this.context = fragment.getActivity();
         List<Uri> uriList = UriConvertUtil.getDataUri(fragment.getActivity(), Uri.parse(url));
         addDataByUriList(uriList);
-//        for (Uri uri : uriList) {
-//            if (!uri.getLastPathSegment().contains("_")) {
-//                Cursor cursor = context.getContentResolver().query(uri, null, DataProvider.COLUMN_URI_MD5 + "= ?", new String[]{UtilMethod.getMD5Str(url)}, null);
-//                int id = cursor.getInt(cursor.getColumnIndex(BaseColumns._ID));
-//                Uri uriWithId = uri.buildUpon().appendEncodedPath(String.valueOf(id)).build();
-//                cursor.close();
-//                jsonPrimary = new JsonPrimary(mFragment, uriWithId);
-//            } else {
-//                JsonListData jsonListData = new JsonListData(context, fragment.getmUrl(), uri);
-//                listDataHashMap.put(jsonListData.getName(), jsonListData);
-//            }
-//        }
     }
 
     public JsonData(BaseFragment fragment, List<Uri> loadUris) {
         this.mFragment = fragment;
         this.context = fragment.getActivity();
         addDataByUriList(loadUris);
-
     }
 
     private void addDataByUriList(List<Uri> loadUris) {

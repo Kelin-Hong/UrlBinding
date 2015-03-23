@@ -86,6 +86,16 @@ public class DataProvider extends ContentProvider {
         context.getContentResolver().insert(DataProvider.URI_MATCHER_URI, uriValues);
     }
 
+    private boolean isUriItem(Uri uri) {
+        try {
+            String s = uri.getLastPathSegment();
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
@@ -148,14 +158,23 @@ public class DataProvider extends ContentProvider {
                 createTable(db, table, values);
             }
             long rowId = 0;
+            long count = 0;
             db.beginTransaction();
             try {
-                rowId = db.insertWithOnConflict(table, BaseColumns._ID, values, SQLiteDatabase.CONFLICT_REPLACE);
+                if (isUriItem(uri)) {
+                    count = db.update(table, values, null, null);
+                } else {
+                    rowId = db.insertWithOnConflict(table, BaseColumns._ID, values, SQLiteDatabase.CONFLICT_REPLACE);
+                }
                 db.setTransactionSuccessful();
             } catch (SQLException e) {
-                if (e.getMessage().contains("has no column named")) {
+                if (e.getMessage().contains("has no column named")||e.getMessage().contains("no such column")) {
                     addColumn(db, table, values);
-                    rowId = db.insertWithOnConflict(table, BaseColumns._ID, values, SQLiteDatabase.CONFLICT_REPLACE);
+                    if (isUriItem(uri)) {
+                        count = db.update(table, values, null, null);
+                    } else {
+                        rowId = db.insertWithOnConflict(table, BaseColumns._ID, values, SQLiteDatabase.CONFLICT_REPLACE);
+                    }
                     db.setTransactionSuccessful();
                 }
                 Log.e(TAG, e.getMessage());
@@ -167,6 +186,9 @@ public class DataProvider extends ContentProvider {
                 Log.v("Uri-Change", "insert" + returnUri.toString());
                 getContext().getContentResolver().notifyChange(returnUri, null);
                 return returnUri;
+            }
+            if (count > 0) {
+                return uri;
             }
             throw new SQLException("Failed to insert row into " + uri);
         }

@@ -1,4 +1,4 @@
-package com.kelin.library.utils;
+package com.kelin.library.viewmodel;
 
 import android.content.Context;
 
@@ -8,6 +8,8 @@ import com.google.dexmaker.FieldId;
 import com.google.dexmaker.Local;
 import com.google.dexmaker.MethodId;
 import com.google.dexmaker.TypeId;
+import com.kelin.library.data.JsonData;
+import com.kelin.library.utils.ClassUtil;
 import com.kelin.library.viewmodel.ListItemPresentationModelParent;
 import com.kelin.library.viewmodel.PresentationModelParent;
 

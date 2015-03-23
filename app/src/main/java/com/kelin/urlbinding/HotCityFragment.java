@@ -4,13 +4,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.android.volley.VolleyError;
 import com.kelin.library.base.BaseFragment;
 import com.kelin.library.loader.OnLoadFinishedListener;
-import com.kelin.library.utils.JsonData;
-import com.kelin.library.utils.JsonListData;
+import com.kelin.library.data.JsonData;
+import com.kelin.library.data.JsonListData;
 
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -37,6 +38,7 @@ public class HotCityFragment extends BaseFragment {
     public void onDataLoadedAndViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mListView = (ListView) view.findViewById(R.id.grid_view);
         mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.ptr_layout);
+        ImageView imageView=new ImageView(getActivity());
         ActionBarPullToRefresh.from(this.getActivity())
                 .allChildrenArePullable()
                 .listener(new OnRefreshListener() {
@@ -72,7 +74,7 @@ public class HotCityFragment extends BaseFragment {
 
 
     @Override
-    protected Class functionPresentationModelClass() {
+    protected Class eventPresentationModelClass() {
         return FunctionPresentationModel.class;
     }
 }

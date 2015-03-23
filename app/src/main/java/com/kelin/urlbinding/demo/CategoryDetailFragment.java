@@ -8,7 +8,7 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kelin.library.base.BaseFragment;
-import com.kelin.library.utils.JsonData;
+import com.kelin.library.data.JsonData;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class CategoryDetailFragment extends BaseFragment {
     }
 
     @Override
-    protected Class functionPresentationModelClass() {
+    protected Class eventPresentationModelClass() {
         return CategoryDetailEventPresentationModel.class;
     }
 }

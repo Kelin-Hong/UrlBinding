@@ -9,7 +9,7 @@ import com.kelin.library.viewmodel.PresentationModelParent;
 public class CategoryDetailEventPresentationModel extends PresentationModelParent {
 
     public void changeStid() {
-        mJsonData.getJsonPrimary().updateAndChangeDB("stid", "stid has been change!");
+        mJsonData.getJsonPrimary().updateAndChangeDB("stid", "stid has been changed!");
         changeSupport.firePropertyChange("stid");
     }
 }

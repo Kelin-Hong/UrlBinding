@@ -1,4 +1,4 @@
-package com.kelin.library.utils;
+package com.kelin.library.data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.kelin.library.dao.ContentValueUtils;
 import com.kelin.library.dao.DataProvider;
+import com.kelin.library.utils.UtilMethod;
 
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
@@ -43,25 +44,14 @@ public class JsonListData {
         return listContentObserver;
     }
 
-    private ContentObserver listContentObserver = new ContentObserver(new Handler()) {
+    private ContentObserver listContentObserver = new ContentObserver(null) {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
             Log.v("Uri-Change", "onChange  ");
-//            if (mListDataIsModel2DB) {
-//                mListDataIsModel2DB = false;
-//                return;
-//            }
-//            if (url != null && listUri != null) {
-//                setJsonListItems(listUri, url);
-//            }
-//            if (changeSupport != null) {
-//                changeSupport.refreshPresentationModel();
-//            }
         }
-
-
     };
+
 
     public JsonListData(String name, Context context, String url) {
         this.name = name;
@@ -157,7 +147,7 @@ public class JsonListData {
 
     public void add(JsonListItem item) {
         jsonListItems.add(item);
-        if (item.getJsonListData() != null) {
+        if (item.getJsonListData() == null) {
             item.setJsonListData(this);
         }
     }

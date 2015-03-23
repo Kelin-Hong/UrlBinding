@@ -1,6 +1,6 @@
 package com.kelin.library.viewmodel;
 
-import com.kelin.library.utils.JsonData;
+import com.kelin.library.data.JsonData;
 
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;

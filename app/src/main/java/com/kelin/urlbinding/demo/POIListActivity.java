@@ -15,7 +15,7 @@ public class POIListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_list);
-        BaseFragment baseFragment = POIListFragment.newInstance(mUrl, R.layout.fragment_poi_list);
+        BaseFragment baseFragment = POIListFragment.newInstance(mUrl, R.layout.fragment_poi_list,"PoiList");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content, baseFragment);
         transaction.commit();

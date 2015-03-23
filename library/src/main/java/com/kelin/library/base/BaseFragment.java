@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,9 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kelin.library.R;
+import com.kelin.library.data.JsonData;
+import com.kelin.library.loader.LoadDataFromDBLoader;
 import com.kelin.library.loader.OnLoadFinishedListener;
-import com.kelin.library.utils.JsonData;
 import com.kelin.library.utils.UriConvertUtil;
 import com.kelin.library.viewmodel.PresentationModelParent;
 
@@ -53,6 +55,26 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
         }
     };
 
+    private LoaderManager.LoaderCallbacks<JsonData> databaseLoaderCallbacks = new LoaderManager.LoaderCallbacks<JsonData>() {
+        @Override
+        public android.support.v4.content.Loader<JsonData> onCreateLoader(int id, Bundle args) {
+            return new LoadDataFromDBLoader(BaseFragment.this, uriList);
+        }
+
+        @Override
+        public void onLoadFinished(android.support.v4.content.Loader<JsonData> loader, JsonData data) {
+            if (mOnLoadFinishedListener != null) {
+                mOnLoadFinishedListener.onLoadFinished(data, null);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(android.support.v4.content.Loader<JsonData> loader) {
+
+        }
+    };
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +83,9 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
             mLayoutId = getArguments().getInt("layout_id");
             mTableName = getArguments().getString("table_name");
             mIsLoadFromDB = getArguments().getBoolean("from_db", false);
+            if (mIsLoadFromDB) {
+                uriList = UriConvertUtil.getDataUri(getActivity(), Uri.parse(mUrl));
+            }
             String uriListStr = getArguments().getString("uri_list");
             if (!(uriListStr == null || uriListStr.length() <= 0)) {
                 List<String> uris = new Gson().fromJson(uriListStr, new TypeToken<List<String>>() {
@@ -68,19 +93,20 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
                 for (String uri : uris) {
                     uriList.add(Uri.parse(uri));
                 }
+            }
+
+            if (uriList.size() > 0) {
+                getLoaderManager().initLoader(0, null, databaseLoaderCallbacks);
                 return;
             }
 
-            if (mIsLoadFromDB) {
-                uriList = UriConvertUtil.getDataUri(getActivity(), Uri.parse(mUrl));
-                return;
-            }
             if (mTableName != null) {
                 loadDataAndCache(mUrl, mTableName, mOnLoadFinishedListener);
             } else {
                 loadData(mUrl, mOnLoadFinishedListener);
             }
         }
+
     }
 
 
@@ -156,10 +182,10 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
 //        if (mIsLoadFromDB) {
 //            loadDataFromDB(mUrl, mOnLoadFinishedListener);
 //        }
-        if (uriList.size() > 0) {
-            loadDataFromDBByUriList(mOnLoadFinishedListener);
-            return;
-        }
+//        if (uriList.size() > 0) {
+//            loadDataFromDBByUriList(mOnLoadFinishedListener);
+//            return;
+//        }
     }
 
     public JsonData getmJsonData() {
@@ -181,7 +207,7 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
         return loadingFragment;
     }
 
-    protected Class functionPresentationModelClass() {
+    protected Class eventPresentationModelClass() {
         return PresentationModelParent.class;
     }
 

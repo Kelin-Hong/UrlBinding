@@ -1,13 +1,10 @@
-package com.kelin.library.utils;
+package com.kelin.library.viewmodel;
 
 import android.content.Context;
 
 import com.google.common.collect.Sets;
 import com.google.dexmaker.stock.ProxyBuilder;
-import com.kelin.library.viewmodel.AbstractListItemPresentationModelParent;
-import com.kelin.library.viewmodel.AbstractPresentationModelParent;
-import com.kelin.library.viewmodel.ListItemPresentationModelParent;
-import com.kelin.library.viewmodel.PresentationModelParent;
+import com.kelin.library.data.JsonData;
 
 import org.robobinding.function.Function;
 import org.robobinding.function.MethodDescriptor;

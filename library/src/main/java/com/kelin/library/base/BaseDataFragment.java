@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kelin.library.UrlBindingApp;
-import com.kelin.library.utils.AbstractPresentationModelObjectGen;
-import com.kelin.library.utils.JsonData;
-import com.kelin.library.utils.PresentationModelGen;
+import com.kelin.library.viewmodel.AbstractPresentationModelObjectGen;
+import com.kelin.library.data.JsonData;
+import com.kelin.library.viewmodel.PresentationModelGen;
 import com.kelin.library.utils.UtilMethod;
 import com.kelin.library.viewmodel.AbstractPresentationModelParent;
 import com.kelin.library.viewmodel.PresentationModelParent;
@@ -61,7 +61,7 @@ public class BaseDataFragment extends Fragment {
     }
 
     protected Class functionPresentationModel() {
-        return ((BaseFragment) getParentFragment()).functionPresentationModelClass();
+        return ((BaseFragment) getParentFragment()).eventPresentationModelClass();
     }
 
 

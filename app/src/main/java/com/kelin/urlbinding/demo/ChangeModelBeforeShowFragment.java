@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.kelin.library.base.BaseFragment;
-import com.kelin.library.utils.JsonData;
+import com.kelin.library.data.JsonData;
 
 /**
  * Created by kelin on 15-3-10.
@@ -35,7 +35,7 @@ public class ChangeModelBeforeShowFragment extends BaseFragment {
         jsonData.getJsonPrimary().update("stid", "Hello UrlBinding");
         Drawable drawable = getResources().getDrawable(android.R.drawable.btn_star);
         for (int i = 0; i < jsonData.getList("data_homepage").getSize(); i++) {
-            jsonData.getList("data_homepage").get(i).add("data_homepage_src", android.R.drawable.btn_star);
+            jsonData.getList("data_homepage").get(i).addAndChangeDB("data_homepage_src", android.R.drawable.btn_star);
         }
     }
 }

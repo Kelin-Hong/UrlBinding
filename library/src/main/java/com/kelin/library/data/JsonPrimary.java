@@ -1,7 +1,8 @@
-package com.kelin.library.utils;
+package com.kelin.library.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,9 +29,11 @@ public class JsonPrimary {
 
     private PresentationModelChangeSupport changeSupport;
 
-    private List<Uri> mUris=new ArrayList<>();
+    private List<Uri> mUris = new ArrayList<>();
 
-    private HashMap<String,Uri> fieldUriMap=new HashMap<>();
+    private String mUrl;
+
+    private HashMap<String, Uri> fieldUriMap = new HashMap<>();
 
     private HashMap<String, Object> jsonPrimaryHashMap = new HashMap<>();
 
@@ -38,7 +41,7 @@ public class JsonPrimary {
         return mContentObserver;
     }
 
-    private ContentObserver mContentObserver = new ContentObserver(new Handler()) {
+    private ContentObserver mContentObserver = new ContentObserver(null) {
 
         @Override
         public void onChange(boolean selfChange) {
@@ -55,6 +58,7 @@ public class JsonPrimary {
             }
         }
     };
+
 
     public JsonPrimary(BaseFragment fragment, Uri loadUri) {
         this.context = fragment.getActivity();
@@ -78,7 +82,7 @@ public class JsonPrimary {
                 continue;
             }
             String key = columnName.substring(columnName.indexOf("_") + 1);
-            fieldUriMap.put(key,uri);
+            fieldUriMap.put(key, uri);
             switch (cursor.getType(cursor.getColumnIndex(columnName))) {
                 case Cursor.FIELD_TYPE_INTEGER:
                     if (jsonPrimaryHashMap.containsKey(key) && jsonPrimaryHashMap.get(key) instanceof Boolean) {
@@ -135,11 +139,15 @@ public class JsonPrimary {
             jsonPrimaryHashMap.put(key, value);
         }
 
+
     }
 
     public boolean update(String key, Object value) {
         if (jsonPrimaryHashMap.containsKey(key)) {
             jsonPrimaryHashMap.put(key, value);
+            Intent intent = new Intent();
+            intent.putExtra("key", key);
+
             return true;
         }
         return false;
@@ -171,7 +179,7 @@ public class JsonPrimary {
         if (get(key).equals(value)) {
             return false;
         }
-        if(fieldUriMap.get(key)==null){
+        if (fieldUriMap.get(key) == null) {
             return false;
         }
         jsonPrimaryHashMap.put(key, value);
