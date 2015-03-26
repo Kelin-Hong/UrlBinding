@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kelin.library.UrlBindingApp;
-import com.kelin.library.viewmodel.AbstractPresentationModelObjectGen;
 import com.kelin.library.data.JsonData;
-import com.kelin.library.viewmodel.PresentationModelGen;
 import com.kelin.library.utils.UtilMethod;
+import com.kelin.library.viewmodel.AbstractPresentationModelObjectGen;
 import com.kelin.library.viewmodel.AbstractPresentationModelParent;
+import com.kelin.library.viewmodel.PresentationModelGen;
 import com.kelin.library.viewmodel.PresentationModelParent;
 
 import org.robobinding.ViewBinder;
@@ -49,7 +49,7 @@ public class BaseDataFragment extends Fragment {
         ViewBinder viewBinder = null;
         try {
             JsonData jsonData = ((BaseFragment) getParentFragment()).getmJsonData();
-            mPresentationModel = (PresentationModelParent) PresentationModelGen.generatePresentationModel(this.getActivity(), UtilMethod.getSha1String(mUrl), functionPresentationModel(), jsonData);
+            mPresentationModel = (PresentationModelParent) PresentationModelGen.generatePresentationModel(this.getActivity(), UtilMethod.getUUID(), functionPresentationModel(), jsonData);
             mPresentationModel.setJsonData(jsonData);
             jsonData.setChangeSupport(mPresentationModel.getPresentationModelChangeSupport());
             AbstractPresentationModelParent abstractPresentationModel = AbstractPresentationModelObjectGen.generateAbstractPresentationModel(this.getActivity(), jsonData, mPresentationModel, functionPresentationModel());

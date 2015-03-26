@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -52,9 +53,25 @@ public class JsonData {
             jsonListData.setJsonListItems(getJsonListItems(listName, jsonListData));
             listDataHashMap.put(listName, jsonListData);
         }
-        jsonPrimary = new JsonPrimary(fragment);
-        for (String objectName : jsonObjectName) {
-            jsonPrimary.add(objectName, jsonMap.get(objectName));
+        jsonPrimary = new JsonPrimary(fragment, jsonMap, jsonObjectName);
+
+        if (mFragment.getmTableName() != null) {
+            cacheToDB(this, mFragment.getmTableName(), mFragment.getmUrl());
+        }
+    }
+
+    public JsonData(BaseFragment fragment, JSONObject jsonObject, String observerIds) {
+        this.mFragment = fragment;
+        this.context = fragment.getActivity();
+        parseJsonObjec("", jsonObject);
+        for (String listName : jsonListName) {
+            JsonListData jsonListData = new JsonListData(listName, context, fragment.getmUrl());
+            jsonListData.setJsonListItems(getJsonListItems(listName, jsonListData));
+            listDataHashMap.put(listName, jsonListData);
+        }
+        jsonPrimary = new JsonPrimary(fragment, jsonMap, jsonObjectName);
+        if (observerIds != null && observerIds.length() > 0) {
+            jsonPrimary.setObserverIds(Arrays.asList(observerIds.split(",")));
         }
         if (mFragment.getmTableName() != null) {
             cacheToDB(this, mFragment.getmTableName(), mFragment.getmUrl());
@@ -69,11 +86,11 @@ public class JsonData {
             if (jsonName.contains("$") && jsonName.startsWith(listName)) {
                 String subName = jsonName.substring(listName.length());
                 String fieldName = subName.substring(subName.lastIndexOf('_') + 1);
-                if (item == null || item.getJsonFieldMap().containsKey(listName+"_"+fieldName)) {
+                if (item == null || item.getJsonFieldMap().containsKey(listName + "_" + fieldName)) {
                     item = new JsonListItem(context, jsonListData);
                     items.add(item);
                 }
-                item.add(listName+"_"+fieldName, jsonMap.get(jsonName));
+                item.add(listName + "_" + fieldName, jsonMap.get(jsonName));
             }
         }
         return items;
@@ -210,6 +227,19 @@ public class JsonData {
             context.getContentResolver().unregisterContentObserver(getList(keyItem).getListContentObserver());
             for (JsonListItem item : getList(keyItem).getJsonListItems()) {
                 context.getContentResolver().unregisterContentObserver(item.getmContentObserver());
+            }
+        }
+    }
+
+    public void unRegisterBoardCast() {
+        if (jsonPrimary.getBroadcastReceiver() != null) {
+            jsonPrimary.getBroadcastReceiver().unregisterReceiver();
+        }
+        for (String keyItem : listDataHashMap.keySet()) {
+            for (JsonListItem item : getList(keyItem).getJsonListItems()) {
+                if (item.getBroadcastReceiver() != null) {
+                    item.getBroadcastReceiver().unregisterReceiver();
+                }
             }
         }
     }

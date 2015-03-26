@@ -4,6 +4,8 @@ package com.kelin.library.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
+import java.util.UUID;
 
 public class UtilMethod {
 
@@ -56,6 +58,22 @@ public class UtilMethod {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getRandomString(int length) {
+        StringBuffer buffer = new StringBuffer("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        StringBuffer sb = new StringBuffer();
+        Random random = new Random();
+        int range = buffer.length();
+        for (int i = 0; i < length; i ++) {
+            sb.append(buffer.charAt(random.nextInt(range)));
+        }
+        return sb.toString();
+    }
+
+    public static String getUUID(){
+        UUID uuid = UUID.randomUUID();
+        return UUID.randomUUID().toString();
     }
 
 }

@@ -18,7 +18,6 @@ public class EventPresentationModel extends PresentationModelParent {
         int position = event.getPosition();
         JsonListItem jsonListItem = mJsonData.getList("data_homepage").getJsonListItems().get(position);
         Intent intent = new Intent(mJsonData.getmFragment().getActivity(), CategoryDetailActivity.class);
-//        intent.setData(jsonListItem.getItemUri());
         intent.putExtra(ARG_ITEM_URI, jsonListItem.getItemUri().toString());
         mJsonData.getmFragment().getActivity().startActivity(intent);
     }

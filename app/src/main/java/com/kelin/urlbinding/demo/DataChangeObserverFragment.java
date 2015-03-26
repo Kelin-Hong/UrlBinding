@@ -7,19 +7,16 @@ import android.view.View;
 import com.android.volley.VolleyError;
 import com.kelin.library.base.BaseFragment;
 import com.kelin.library.data.JsonData;
-import com.kelin.library.data.JsonListData;
-import com.kelin.library.data.JsonListItem;
 
 /**
  * Created by kelin on 15-3-10.
  */
-public class POIListFragment extends BaseFragment {
-    public static POIListFragment newInstance(String url, int layoutId,String tableName) {
-        POIListFragment simpelListFragment = new POIListFragment();
+public class DataChangeObserverFragment extends BaseFragment {
+    public static DataChangeObserverFragment newInstance(String url, int layoutId) {
+        DataChangeObserverFragment simpelListFragment = new DataChangeObserverFragment();
         Bundle bundle = new Bundle();
         bundle.putString("url", url);
         bundle.putInt("layout_id", layoutId);
-        bundle.putString("table_name",tableName);
         simpelListFragment.setArguments(bundle);
         return simpelListFragment;
     }
@@ -31,11 +28,11 @@ public class POIListFragment extends BaseFragment {
 
     @Override
     public void onDataLoadedFinish(JsonData jsonData, VolleyError volleyError) {
-        JsonListData jsonListData = jsonData.getList("data");
-        for (JsonListItem jsonListItem : jsonListData.getJsonListItems()) {
-            String imageUrl = (String) jsonListItem.get("data_frontImg");
-            String newImageUrl=imageUrl.replace("/w.h/", "/200.120/");
-            jsonListItem.update("data_frontImg", newImageUrl);
-        }
+
+    }
+
+    @Override
+    protected Class eventPresentationModelClass() {
+        return DataChangeObserverPresentationModel.class;
     }
 }

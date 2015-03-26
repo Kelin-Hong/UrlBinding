@@ -24,7 +24,7 @@ public class UrlJsonData {
 
     private Context context;
 
-    private JsonPrimary jsonPrimary;
+    private UrlJsonPrimary jsonPrimary;
 
     private HashMap<String, UrlJsonListData> listDataHashMap = new HashMap<>();
 
@@ -42,11 +42,12 @@ public class UrlJsonData {
         this.context = fragment.getActivity();
         parseJsonObjec("", jsonObject);
         for (String listName : jsonListName) {
-            UrlJsonListData jsonListData = new UrlJsonListData(listName, context, fragment.getmUrl());
+            UrlJsonListData jsonListData = new UrlJsonListData(listName, context);
             jsonListData.setUrlJsonListItems(getUrlJsonListItems(listName, jsonListData));
             listDataHashMap.put(listName, jsonListData);
         }
-        jsonPrimary = new JsonPrimary(fragment);
+        jsonPrimary = new UrlJsonPrimary(fragment);
+
         for (String objectName : jsonObjectName) {
             jsonPrimary.add(objectName, jsonMap.get(objectName));
         }
@@ -61,7 +62,7 @@ public class UrlJsonData {
                 String subName = jsonName.substring(listName.length());
                 String fieldName = subName.substring(subName.lastIndexOf('_') + 1);
                 if (item == null || item.getJsonFieldMap().containsKey(listName+"_"+fieldName)) {
-                    item = new UrlJsonListItem(context, jsonListData);
+                    item = new UrlJsonListItem(context, jsonListData,jsonName);
                     items.add(item);
                 }
                 item.add(listName+"_"+fieldName, jsonMap.get(jsonName));
@@ -123,7 +124,7 @@ public class UrlJsonData {
         return mFragment;
     }
 
-    public JsonPrimary getJsonPrimary() {
+    public UrlJsonPrimary getUrlJsonPrimary() {
         return jsonPrimary;
     }
 

@@ -24,6 +24,7 @@ import com.kelin.library.loader.OnLoadFinishedListener;
 import com.kelin.library.utils.UriConvertUtil;
 import com.kelin.library.viewmodel.PresentationModelParent;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -79,6 +80,7 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+
             mUrl = getArguments().getString("url");
             mLayoutId = getArguments().getInt("layout_id");
             mTableName = getArguments().getString("table_name");
@@ -98,6 +100,11 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
             if (uriList.size() > 0) {
                 getLoaderManager().initLoader(0, null, databaseLoaderCallbacks);
                 return;
+            }
+
+            if (getArguments().getString("json_str") != null) {
+                return;
+
             }
 
             if (mTableName != null) {
@@ -179,13 +186,19 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.content, createLoadingFragment());
         transaction.commit();
-//        if (mIsLoadFromDB) {
-//            loadDataFromDB(mUrl, mOnLoadFinishedListener);
-//        }
-//        if (uriList.size() > 0) {
-//            loadDataFromDBByUriList(mOnLoadFinishedListener);
-//            return;
-//        }
+        if (getArguments().getString("json_str") != null) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(getArguments().getString("json_str"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JsonData jsonData = new JsonData(BaseFragment.this, jsonObject, getArguments().getString("json_data_ids"));
+            if (mOnLoadFinishedListener != null) {
+                mOnLoadFinishedListener.onLoadFinished(jsonData, null);
+            }
+        }
     }
 
     public JsonData getmJsonData() {
@@ -221,6 +234,7 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment {
     public void onDestroy() {
         super.onDestroy();
         mJsonData.unRegisterContentObserver();
+        mJsonData.unRegisterBoardCast();
         mJsonData = null;
     }
 }

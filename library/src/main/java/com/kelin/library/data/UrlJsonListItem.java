@@ -17,12 +17,13 @@ import java.util.Map;
  * Created by kelin on 15-3-10.
  */
 public class UrlJsonListItem {
+    private static final String ACTION_NAME_PREFIX = "Com.UrlBinding.ListItem.";
 
     private UrlJsonListData jsonListData;
 
-    private String listName;
+    private Context context;
 
-    private String mUrl;
+    private String itemId;
 
     public BroadcastReceiverHelper broadcastReceiver;
 
@@ -31,23 +32,22 @@ public class UrlJsonListItem {
     private HashMap<String, Object> jsonFieldMap = new HashMap<>();
 
 
-    public UrlJsonListItem(Context context, UrlJsonListData jsonListData) {
+    public UrlJsonListItem(Context context, UrlJsonListData jsonListData, String itemId) {
         this.jsonListData = jsonListData;
+        this.itemId = itemId;
+        this.context = context;
+        jsonFieldMap.put("item_id", itemId);
         broadcastReceiver = new BroadcastReceiverHelper(context);
-
-        if (jsonListData.getUrl() != null) {
-            broadcastReceiver.registerAction(jsonListData.getUrl());
-        }
+        broadcastReceiver.registerAction(ACTION_NAME_PREFIX + itemId);
     }
 
-    public UrlJsonListItem(Context context, String jsonStr, String url) {
+    public UrlJsonListItem(Context context, String jsonStr, String itemId) {
+        this.context = context;
         broadcastReceiver = new BroadcastReceiverHelper(context);
         jsonFieldMap = new Gson().fromJson(jsonStr,
                 new TypeToken<Map<String, Object>>() {
                 }.getType());
-        if (url != null) {
-            broadcastReceiver.registerAction(url);
-        }
+        broadcastReceiver.registerAction(ACTION_NAME_PREFIX + itemId);
     }
 
     public String getJsonString() {
@@ -73,7 +73,6 @@ public class UrlJsonListItem {
 
     public void setUrlJsonListData(UrlJsonListData jsonListData) {
         this.jsonListData = jsonListData;
-        this.listName = jsonListData.getName();
     }
 
     public void add(String key, Object value) {
@@ -89,6 +88,9 @@ public class UrlJsonListItem {
     public boolean update(String key, Object value) {
         if (jsonFieldMap.containsKey(key)) {
             jsonFieldMap.put(key, value);
+            Intent intent = new Intent(ACTION_NAME_PREFIX + this.itemId);
+            intent.putExtra("key", key);
+            context.sendBroadcast(intent);
             return true;
         }
         return false;
@@ -118,12 +120,11 @@ public class UrlJsonListItem {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-//            for (String action : mUrls) {
-//                if (intent.getAction().equals(action)) {
-//                    String key = intent.getStringExtra("key");
-//                    changeSupport.firePropertyChange(key);
-//                }
-//            }
+            if (intent.getAction().equals(ACTION_NAME_PREFIX + itemId)) {
+                String key = intent.getStringExtra("key");
+                changeSupport.firePropertyChange(key);
+            }
+
         }
     }
 

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.kelin.library.dao.ContentValueUtils;
 import com.kelin.library.dao.DataProvider;
 import com.kelin.library.utils.UtilMethod;
@@ -75,6 +76,8 @@ public class JsonListData {
             setJsonListItemsByItemUris(itemUriList);
         }
     }
+
+
 
 
     public void setListUri(final Uri listUri) {

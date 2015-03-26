@@ -101,9 +101,18 @@
 
         </activity>
         <activity
+            android:name=".demo.DataChangeObserverDetailActivity"
+            android:label="category_detail">
+
+        </activity>
+        <activity
             android:name=".demo.DataChangeObserverActivity"
             android:label="@string/title_activity_data_change_observer">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="com.kelin.uribinding.main.DEMO" />
+            </intent-filter>
         </activity>
     </application>
 

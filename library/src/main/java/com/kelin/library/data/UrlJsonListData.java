@@ -14,7 +14,6 @@ import java.util.Set;
  */
 public class UrlJsonListData {
     private Context context;
-    private String url;
     private String name;
     private int size;
     private PresentationModelChangeSupport changeSupport;
@@ -22,10 +21,9 @@ public class UrlJsonListData {
     private Set<String> allFieldWithName = new HashSet<>();
     private List<UrlJsonListItem> jsonListItems = new ArrayList<>();
 
-    public UrlJsonListData(String name, Context context, String url) {
+    public UrlJsonListData(String name, Context context) {
         this.name = name;
         this.context = context;
-        this.url = url;
     }
 
     public void setUrlJsonListItems(List<UrlJsonListItem> jsonListItems) {
@@ -45,9 +43,6 @@ public class UrlJsonListData {
         return name;
     }
 
-    public String getUrl() {
-        return url;
-    }
 
     public UrlJsonListItem get(int index) {
         if (jsonListItems != null && !jsonListItems.isEmpty()) {
